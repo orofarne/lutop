@@ -1,13 +1,16 @@
 #pragma once
 
+#include <boost/asio/io_service.hpp>
+
 namespace lutop {
 
 class SubProcess {
     public:
-        SubProcess();
+        SubProcess(boost::asio::io_service &io_service);
         ~SubProcess() throw();
 
     private:
+        boost::asio::io_service &io_service_;
 };
 
 }
