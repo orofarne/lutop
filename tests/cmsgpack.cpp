@@ -15,12 +15,12 @@ TEST(cmsgpack, checkLua) {
     lua_State *L = lua_open();
     luaL_openlibs(L);
 
+    rc = luaJIT_setmode(L, 0, LUAJIT_MODE_ENGINE | LUAJIT_MODE_ON);
+    EXPECT_EQ(1, rc);
+
     std::string buf = "x = 10";
     rc = luaL_loadbuffer(L, buf.c_str(), buf.length(), "test");
     ASSERT_EQ(0, rc);
-
-    rc = luaJIT_setmode(L, 0, LUAJIT_MODE_ALLSUBFUNC | LUAJIT_MODE_ON);
-    EXPECT_EQ(1, rc);
 
     rc = lua_pcall(L, 0, 0, 0);
     LUA_ASSERT_PCALL(L, rc);

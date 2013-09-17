@@ -1,4 +1,5 @@
 add_library(lutop_lib STATIC
+    Context.cpp
     SubProcess.cpp
 )
 
