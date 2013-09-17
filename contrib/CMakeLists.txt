@@ -27,3 +27,17 @@ ExternalProject_Add(luacmsgpack
 )
 
 set(LUACMSGPACK_SRC "${CMAKE_CURRENT_BINARY_DIR}/lua-cmsgpack/lua_cmsgpack.c" PARENT_SCOPE)
+
+# msgpack-c-len
+ExternalProject_Add(msgpackclen
+  GIT_REPOSITORY "https://github.com/orofarne/msgpack-c-len.git"
+  DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}
+  SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/msgpack-c-len
+  BUILD_IN_SOURCE 1
+  INSTALL_COMMAND ""
+  TEST_BEFORE_INSTALL 1
+  TEST_COMMAND "./msglen_test"
+)
+
+set(MSGPACKCLEN_INCLUDE_DIRS "${CMAKE_CURRENT_BINARY_DIR}/msgpack-c-len" PARENT_SCOPE)
+set(MSGPACKCLEN_LIBRARY "${CMAKE_CURRENT_BINARY_DIR}/msgpack-c-len/libmsgpack-c-len.a" PARENT_SCOPE)
