@@ -78,7 +78,7 @@ TEST(Context, Shadow) {
     }
 }
 
-TEST(Context, SetMetatable) {
+TEST(Context, MixTables) {
     using namespace lutop;
 
     Context c;
@@ -101,3 +101,23 @@ TEST(Context, SetMetatable) {
     EXPECT_TRUE( str == "barbazz" );
 }
 
+TEST(Context, FFI) {
+    using namespace lutop;
+
+    std::string code =
+        "local ffi = require('ffi')\n"
+        "ffi.cdef[[\n"
+        "   int getpid();\n"
+        "]]\n"
+        "x = 'my pid is ' .. ffi.C.getpid()\n"
+        ;
+
+
+    Context c;
+    c.load(code.c_str(), code.length());
+
+    std::string str = c.getString("x");
+    std::ostringstream sstr;
+    sstr << "my pid is " << getpid();
+    EXPECT_TRUE( str == sstr.str() );
+}
