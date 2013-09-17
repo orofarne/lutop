@@ -6,12 +6,16 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 OPTION(TESTS "enable_testing" ON)
 
-# Initialize CXXFLAGS.
+# Initialize FLAGS.
 set(CMAKE_CXX_FLAGS                "-Wall -std=c++11")
 set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g")
+set(CMAKE_C_FLAGS_DEBUG            "-O0 -g")
 set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
+set(CMAKE_C_FLAGS_MINSIZEREL       "-Os -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
+set(CMAKE_C_FLAGS_RELEASE          "-O4 -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
+set(CMAKE_C_FLAGS_RELWITHDEBINFO   "-O2 -g")
 
 # Compiler-specific C++11 activation.
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
@@ -33,8 +37,9 @@ set(Boost_USE_STATIC_RUNTIME    OFF)
 find_package( Boost 1.47.0 COMPONENTS system REQUIRED )
 include_directories(${Boost_INCLUDE_DIRS})
 
-# LuaJIT
+# Lua staff
 add_subdirectory(contrib)
+include_directories(${LUAJIT_INCLUDE_DIRS})
 
 # Code
 add_subdirectory(src)

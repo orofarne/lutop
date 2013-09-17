@@ -9,7 +9,7 @@ main(int argc, char *argv[]) {
 
     std::vector<int> v = {1, 2, 3};
     std::for_each(v.begin(), v.end(), [](int x) {
-        std::cout << "Hello" << x << "!" << std::endl;
+        std::cout << "Hello " << x << "!" << std::endl;
     });
 
     return 0;
