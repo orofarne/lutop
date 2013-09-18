@@ -14,7 +14,7 @@ class Context {
 
         void setString(const char *name, const char *str);
         void setString(const char *name, const char *str, size_t len);
-        const char *getString(const char *name, size_t *len = NULL);
+        const char *getString(const char *name, size_t *len = nullptr);
 
         void mixTatables(const char *name1, const char *name2);
 

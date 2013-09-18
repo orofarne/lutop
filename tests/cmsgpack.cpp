@@ -6,7 +6,7 @@
 #define LUA_ASSERT_PCALL(L, rc) \
     EXPECT_EQ(0, rc); \
     if(rc) { \
-        FAIL() << "Error: " << lua_tolstring(L, -1, NULL);\
+        FAIL() << "Error: " << lua_tolstring(L, -1, nullptr);\
     }
 
 TEST(cmsgpack, checkLua) {
@@ -85,7 +85,7 @@ TEST(cmsgpack, example) {
     LUA_ASSERT_PCALL(L, rc);
 
     lua_getglobal(L, "str");
-    std::string str = lua_tolstring(L, -1, NULL);
+    std::string str = lua_tolstring(L, -1, nullptr);
     if(str != "Hello") {
         FAIL() << "str = " << str << " (not \"Hello\")";
     }

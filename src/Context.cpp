@@ -40,7 +40,7 @@ Context::lIndexPass_(lua_State *L) {
 }
 
 Context::Context()
-    : L_(NULL)
+    : L_(nullptr)
 {
     L_ = lua_open();
 
@@ -57,7 +57,7 @@ Context::Context()
 }
 
 Context::~Context() throw() {
-    if(L_ != NULL) {
+    if(L_ != nullptr) {
         lua_close(L_);
     }
 }
@@ -70,7 +70,7 @@ Context::load(const char *code, size_t len) {
     rc = lua_pcall(L_, 0, 0, 0);
     if(rc) {
         std::string msg = "lua_pcall error: ";
-        msg += lua_tolstring(L_, -1, NULL);
+        msg += lua_tolstring(L_, -1, nullptr);
         throw std::runtime_error(msg);
     }
 }
@@ -83,7 +83,7 @@ Context::loadModule(const char *name, const char *code, size_t len) {
     rc = lua_pcall(L_, 0, 1, 0);
     if(rc) {
         std::string msg = "lua_pcall error: ";
-        msg += lua_tolstring(L_, -1, NULL);
+        msg += lua_tolstring(L_, -1, nullptr);
         throw std::runtime_error(msg);
     }
 
