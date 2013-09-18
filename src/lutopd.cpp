@@ -1,3 +1,5 @@
+#include "Manager.hpp"
+
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -5,7 +7,6 @@
 
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
 
 int
 smain(int argc, char *argv[]) {
@@ -33,15 +34,15 @@ smain(int argc, char *argv[]) {
         auto conf_path = vm["config-path"].as< std::vector<std::string> >();
         for(std::string &dir : conf_path) {
             fs::path p(dir);
-            if(fs::is_regular_file(p) && 0 == p.extension().compare(".lua")) {
-                files.push_back(boost::lexical_cast<std::string>(p));
+            if(fs::is_regular_file(p) && 0 == p.extension().compare(".lua") && file_size(p) > 0) {
+                files.push_back(p.native());
             }
             else if (fs::is_directory(p)) {
                 std::for_each(fs::directory_iterator(p), fs::directory_iterator(),
                     [&](fs::directory_entry &de) {
                         fs::path p2 = de.path();
-                        if(fs::is_regular_file(p2) && 0 == p2.extension().compare(".lua")) {
-                            files.push_back(boost::lexical_cast<std::string>(p2));
+                        if(fs::is_regular_file(p2) && 0 == p2.extension().compare(".lua") && file_size(p2) > 0) {
+                            files.push_back(p2.native());
                         }
                     }
                 );
@@ -53,10 +54,10 @@ smain(int argc, char *argv[]) {
         return 1;
     }
 
-    // TODO
-    for(std::string &f : files) {
-        std::cout << f << "\n";
-    }
+    // run it...
+    lutop::Manager m;
+
+    m.loadFiles(files);
 
     return 0;
 }
