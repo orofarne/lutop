@@ -51,8 +51,13 @@ Manager::loadFiles(std::vector<std::string> const &files) {
         std::string filename = p.filename().native();
         std::string module_name = filename.substr(0, filename.length() - 4);
 
-        modules_.push_back(module_name);
-        c_.loadModule(module_name.c_str(), (const char *)data, statbuf.st_size);
+        if(module_name == "__init__") {
+            c_.load((const char *)data, statbuf.st_size);
+        }
+        else {
+            modules_.push_back(module_name);
+            c_.loadModule(module_name.c_str(), (const char *)data, statbuf.st_size);
+        }
 
         if (munmap(data, statbuf.st_size))
             THROW_ERRNO("munmap");
