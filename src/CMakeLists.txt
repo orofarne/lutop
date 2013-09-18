@@ -7,13 +7,13 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lua_cmsgpack.c ${CMAKE_CURRENT_BINARY
 add_library(luacmsgpack_lib STATIC ${CMAKE_CURRENT_BINARY_DIR}/lua_cmsgpack.c)
 add_dependencies(luacmsgpack_lib luacmsgpack)
 
-add_executable(lutop main.cpp)
-add_dependencies(lutop
+add_executable(lutopd lutopd.cpp)
+add_dependencies(lutopd
     lutop_lib
     luajit
     luacmsgpack_lib
 )
-target_link_libraries(lutop
+target_link_libraries(lutopd
     lutop_lib
     luacmsgpack_lib
     ${Boost_LIBRARIES}
@@ -21,4 +21,4 @@ target_link_libraries(lutop
     "dl"
 )
 
-install(TARGETS lutop DESTINATION bin)
+install(TARGETS lutopd DESTINATION bin)
