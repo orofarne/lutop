@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Module.hpp"
 #include "Context.hpp"
 
 #include <string>
@@ -17,7 +18,10 @@ class Manager {
 
     private:
         Context c_;
-        std::vector<std::string> modules_;
+        std::vector<Module> modules_;
+
+    private:
+        void prepareModules();
 };
 
 }

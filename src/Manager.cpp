@@ -55,7 +55,7 @@ Manager::loadFiles(std::vector<std::string> const &files) {
             c_.load((const char *)data, statbuf.st_size);
         }
         else {
-            modules_.push_back(module_name);
+            modules_.push_back(Module(module_name));
             c_.loadModule(module_name.c_str(), (const char *)data, statbuf.st_size);
         }
 
@@ -66,7 +66,17 @@ Manager::loadFiles(std::vector<std::string> const &files) {
 
 void
 Manager::run() {
+    prepareModules();
 
+    // TODO
+}
+
+void
+Manager::prepareModules() {
+    for(Module &m : modules_) {
+        if(c_[m.name().c_str()]->asTable()->get("disabled"))
+            m.disable();
+    }
 }
 
 }

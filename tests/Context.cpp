@@ -16,7 +16,7 @@ TEST(Context, Hello) {
     Context c;
     c.load(code.c_str(), code.length());
 
-    std::string str = c.getString("x");
+    std::string str = c["x"]->asString();
     EXPECT_TRUE( str == "hello" );
 }
 
@@ -32,11 +32,11 @@ TEST(Context, GetSetString) {
     std::string code = "x = a .. ' ' .. b\n";
     c.load(code.c_str(), code.length());
 
-    std::string str = c.getString("x");
+    std::string str = c["x"]->asString();
     EXPECT_TRUE( str == "hello world" );
 
     size_t len = 0;
-    c.getString("x", &len);
+    c["x"]->asString(&len);
     EXPECT_EQ(str.length(), len);
 }
 
@@ -52,7 +52,7 @@ TEST(Context, LoadModule) {
     std::string code2 = "str = xyz.x .. xyz.y";
     c.load(code2.c_str(), code2.length());
 
-    std::string str = c.getString("str");
+    std::string str = c["str"]->asString();
     EXPECT_TRUE( str == "xyz10" );
 }
 
@@ -65,7 +65,7 @@ TEST(Context, Shadow) {
         std::string code = "x = 'hello'\n";
         c.load(code.c_str(), code.length());
 
-        std::string str = c.getString("x");
+        std::string str = c["x"]->asString();
         EXPECT_TRUE( str == "hello" );
     }
 
@@ -73,7 +73,7 @@ TEST(Context, Shadow) {
         std::string code = "x = 'hello2'\n";
         c.load(code.c_str(), code.length());
 
-        std::string str = c.getString("x");
+        std::string str = c["x"]->asString();
         EXPECT_TRUE( str == "hello2" );
     }
 }
@@ -97,7 +97,7 @@ TEST(Context, MixTables) {
                         "str = x.foo\n";
     c.load(code3.c_str(), code3.length());
 
-    std::string str = c.getString("str");
+    std::string str = c["str"]->asString();
     EXPECT_TRUE( str == "barbazz" );
 }
 
@@ -116,8 +116,24 @@ TEST(Context, FFI) {
     Context c;
     c.load(code.c_str(), code.length());
 
-    std::string str = c.getString("x");
+    std::string str = c["x"]->asString();
     std::ostringstream sstr;
     sstr << "my pid is " << getpid();
     EXPECT_TRUE( str == sstr.str() );
+}
+
+TEST(Context, BoolFromTable) {
+    using namespace lutop;
+
+    std::string code =
+        "t = { a = true, b = false }\n"
+        ;
+
+
+    Context c;
+    c.load(code.c_str(), code.length());
+
+    EXPECT_TRUE( c["t"]->asTable()->get("a")->asBool() );
+    EXPECT_FALSE( c["t"]->asTable()->get("b")->asBool() );
+    EXPECT_FALSE( c["t"]->asTable()->get("c")->asBool() );
 }

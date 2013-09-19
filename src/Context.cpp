@@ -24,7 +24,7 @@ Context::lIndexPass_(lua_State *L) {
         lua_error(L);
     }
 
-    int idx = -1; // ???
+    int idx = -1;
     if(!lua_isstring(L, idx)) {
         lua_pushstring(L, "lIndexPass_: invalid argument");
         lua_error(L);
@@ -71,6 +71,7 @@ Context::load(const char *code, size_t len) {
     if(rc) {
         std::string msg = "lua_pcall error: ";
         msg += lua_tolstring(L_, -1, nullptr);
+        lua_pop(L_, 1);
         throw std::runtime_error(msg);
     }
 }
@@ -84,10 +85,17 @@ Context::loadModule(const char *name, const char *code, size_t len) {
     if(rc) {
         std::string msg = "lua_pcall error: ";
         msg += lua_tolstring(L_, -1, nullptr);
+        lua_pop(L_, 1);
         throw std::runtime_error(msg);
     }
 
     lua_setglobal(L_, name);
+}
+
+std::shared_ptr<LuaValue>
+Context::operator[](const char *name) {
+    lua_getglobal(L_, name);
+    return std::make_shared<LuaValue>(L_);
 }
 
 void
@@ -100,12 +108,6 @@ void
 Context::setString(const char *name, const char *str, size_t len) {
     lua_pushlstring(L_, str, len);
     lua_setglobal(L_, name);
-}
-
-const char *
-Context::getString(const char *name, size_t *len) {
-    lua_getglobal(L_, name);
-    return lua_tolstring(L_, -1, len);
 }
 
 void
@@ -122,6 +124,8 @@ Context::mixTatables(const char *name1, const char *name2) {
 
     // Set metatable
     lua_setmetatable(L_, -2);
+
+    lua_pop(L_, 3);
 }
 
 }

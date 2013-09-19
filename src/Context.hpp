@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lua.hpp"
+#include "luatools.hpp"
 
 namespace lutop {
 
@@ -12,9 +12,10 @@ class Context {
         void load(const char *code, size_t len);
         void loadModule(const char *name, const char *code, size_t len);
 
+        std::shared_ptr<LuaValue> operator[](const char *name);
+
         void setString(const char *name, const char *str);
         void setString(const char *name, const char *str, size_t len);
-        const char *getString(const char *name, size_t *len = nullptr);
 
         void mixTatables(const char *name1, const char *name2);
 

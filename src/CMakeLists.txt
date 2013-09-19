@@ -2,6 +2,8 @@ add_library(lutop_lib STATIC
     Manager.cpp
     Context.cpp
     SubProcess.cpp
+    Module.cpp
+    luatools.cpp
 )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lua_cmsgpack.c ${CMAKE_CURRENT_BINARY_DIR}/lua_cmsgpack.c)
