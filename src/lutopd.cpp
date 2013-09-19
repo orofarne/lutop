@@ -34,14 +34,14 @@ smain(int argc, char *argv[]) {
         auto conf_path = vm["config-path"].as< std::vector<std::string> >();
         for(std::string &dir : conf_path) {
             fs::path p(dir);
-            if(fs::is_regular_file(p) && 0 == p.extension().compare(".lua") && file_size(p) > 0) {
+            if(fs::is_regular_file(p) && (p.extension() == ".lua") && file_size(p) > 0) {
                 files.push_back(p.native());
             }
             else if (fs::is_directory(p)) {
                 std::for_each(fs::directory_iterator(p), fs::directory_iterator(),
                     [&](fs::directory_entry &de) {
                         fs::path p2 = de.path();
-                        if(fs::is_regular_file(p2) && 0 == p2.extension().compare(".lua") && file_size(p2) > 0) {
+                        if(fs::is_regular_file(p2) && (p2.extension() == ".lua") && file_size(p2) > 0) {
                             files.push_back(p2.native());
                         }
                     }
