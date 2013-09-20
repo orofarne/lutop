@@ -11,7 +11,10 @@ class LuaValue {
         LuaValue(lua_State *L);
         ~LuaValue() throw();
 
+        bool isNil();
+
         const char *asString(size_t *len = nullptr);
+        lua_Integer asInteger(bool *is_num = nullptr);
         bool asBool();
         std::shared_ptr<LuaTable> asTable();
 

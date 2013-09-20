@@ -11,9 +11,23 @@ LuaValue::~LuaValue() throw() {
     lua_pop(L_, 1);
 }
 
+bool
+LuaValue::isNil() {
+    return lua_isnil(L_, -1);
+}
+
 const char *
 LuaValue::asString(size_t *len) {
     return lua_tolstring(L_, -1, len);
+}
+
+lua_Integer
+LuaValue::asInteger(bool *is_num) {
+    if(is_num)
+        *is_num = (bool)lua_isnumber(L_, -1);
+
+    lua_Integer res = lua_tointeger(L_, -1);
+    return res;
 }
 
 bool

@@ -137,3 +137,50 @@ TEST(Context, BoolFromTable) {
     EXPECT_FALSE( c["t"]->asTable()->get("b")->asBool() );
     EXPECT_FALSE( c["t"]->asTable()->get("c")->asBool() );
 }
+
+TEST(Context, IsNil) {
+    using namespace lutop;
+
+    std::string code =
+        "t = { a = true, b = false }\n"
+        ;
+
+
+    Context c;
+    c.load(code.c_str(), code.length());
+
+    EXPECT_TRUE( c["foo"]->isNil() );
+    EXPECT_FALSE( c["t"]->isNil() );
+
+    EXPECT_FALSE( c["t"]->asTable()->get("a")->isNil() );
+    EXPECT_FALSE( c["t"]->asTable()->get("b")->isNil() );
+    EXPECT_TRUE( c["t"]->asTable()->get("c")->isNil() );
+}
+
+TEST(Context, Integer) {
+    using namespace lutop;
+
+    std::string code =
+        "x = 10\n"
+        "y = 3.14\n"
+        "z = 'hello'"
+        ;
+
+
+    Context c;
+    c.load(code.c_str(), code.length());
+
+    bool isnum = false;
+
+    EXPECT_EQ(10, c["x"]->asInteger(&isnum));
+    EXPECT_TRUE(isnum);
+
+    EXPECT_EQ(3, c["y"]->asInteger(&isnum));
+    EXPECT_TRUE(isnum);
+
+    EXPECT_EQ(0, c["z"]->asInteger(&isnum));
+    EXPECT_FALSE(isnum);
+
+    EXPECT_EQ(0, c["foo"]->asInteger(&isnum));
+    EXPECT_FALSE(isnum);
+}

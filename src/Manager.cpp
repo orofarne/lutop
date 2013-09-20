@@ -22,7 +22,9 @@
 
 namespace lutop {
 
-Manager::Manager() {
+Manager::Manager()
+    : scheduler_timer_(io_service_)
+{
 
 }
 
@@ -68,15 +70,41 @@ void
 Manager::run() {
     prepareModules();
 
+    io_service_.dispatch(
+            std::bind(&Manager::runIter, this, std::placeholders::_1)
+            );
+
+    io_service_.run();
+}
+
+void
+Manager::runIter(const boost::system::error_code& error) {
+    if(error) {
+        throw std::runtime_error(error.message());
+    }
+
     // TODO
 }
 
 void
 Manager::prepareModules() {
     for(Module &m : modules_) {
-        if(c_[m.name().c_str()]->asTable()->get("disabled"))
+        auto m_table = c_[m.name().c_str()]->asTable();
+        // Disabled
+        if(m_table->get("disabled"))
             m.disable();
+
+        // Periodic
+        bool is_num = false;
+        time_t t = m_table->get("periodic")->asInteger(&is_num);
+        if(is_num)
+            m.setPeriod(t);
     }
+}
+
+time_t
+Manager::startSomething() {
+
 }
 
 }
