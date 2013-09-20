@@ -21,6 +21,8 @@ target_link_libraries(lutopd
     luacmsgpack_lib
     ${Boost_LIBRARIES}
     ${LUAJIT_LIBRARY}
+    ${MsgPack_LIBRARY}
+    ${MSGPACKCLEN_LIBRARY}
     "dl"
 )
 

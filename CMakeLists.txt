@@ -34,12 +34,17 @@ endif ()
 set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
-find_package( Boost 1.49.0 COMPONENTS system filesystem program_options REQUIRED )
+find_package( Boost 1.48.0 COMPONENTS system filesystem program_options REQUIRED )
 include_directories(${Boost_INCLUDE_DIRS})
 
 # Lua staff
 add_subdirectory(contrib)
 include_directories(${LUAJIT_INCLUDE_DIRS})
+include_directories(${MSGPACKCLEN_INCLUDE_DIRS})
+
+# Msgpack for manager process
+find_package(MsgPack REQUIRED)
+include_directories(${MsgPack_INCLUDE_DIRS})
 
 # Code
 add_subdirectory(src)

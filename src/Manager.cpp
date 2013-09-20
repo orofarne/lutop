@@ -7,9 +7,11 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <time.h>
 
 #include <sstream>
 #include <stdexcept>
+#include <limits>
 
 #include <boost/filesystem.hpp>
 
@@ -71,19 +73,27 @@ Manager::run() {
     prepareModules();
 
     io_service_.dispatch(
-            std::bind(&Manager::runIter, this, std::placeholders::_1)
+            std::bind(&Manager::runIter, this, boost::system::error_code{})
             );
 
     io_service_.run();
 }
 
 void
-Manager::runIter(const boost::system::error_code& error) {
+Manager::runIter(const boost::system::error_code &error) {
     if(error) {
         throw std::runtime_error(error.message());
     }
 
-    // TODO
+    time_t t = 0;
+    while(t == 0) {
+        t = startSomething();
+    }
+
+    scheduler_timer_.expires_from_now(boost::posix_time::seconds(t));
+    scheduler_timer_.async_wait(
+            std::bind(&Manager::runIter, this, std::placeholders::_1)
+            );
 }
 
 void
@@ -104,7 +114,31 @@ Manager::prepareModules() {
 
 time_t
 Manager::startSomething() {
+    time_t now = time(nullptr);
+    time_t wait;
+    wait = std::numeric_limits<decltype(wait)>::max();
 
+    for(Module &m : modules_) {
+        if(m.status() != Module::Status::Wait || m.period() == 0)
+            continue;
+
+        if(m.nextRun() <= now) {
+            startModule(m);
+            wait = 0;
+        }
+        else {
+            time_t d = m.nextRun() - now;
+            if(wait > d)
+                wait = d;
+        }
+    }
+
+    return wait;
+}
+
+void
+Manager::startModule(Module &m) {
+    // TODO
 }
 
 }

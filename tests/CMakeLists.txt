@@ -15,6 +15,8 @@ target_link_libraries(lutop_test
   ${CMAKE_THREAD_LIBS_INIT}
   ${Boost_LIBRARIES}
   ${LUAJIT_LIBRARY}
+  ${MsgPack_LIBRARY}
+  ${MSGPACKCLEN_LIBRARY}
   "dl"
 )
 

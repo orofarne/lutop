@@ -24,12 +24,13 @@ class Manager {
 
         // Boost::Asio staff
         boost::asio::io_service io_service_;
-        boost::asio::steady_timer scheduler_timer_;
+        boost::asio::deadline_timer scheduler_timer_;
 
     private:
         void runIter(const boost::system::error_code& error);
         void prepareModules();
         time_t startSomething();
+        void startModule(Module &m);
 };
 
 }
