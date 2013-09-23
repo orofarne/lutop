@@ -17,7 +17,9 @@ set(LUAJIT_LIBRARY "${CMAKE_CURRENT_BINARY_DIR}/LuaJIT-2.0.1/src/libluajit.a" PA
 
 # lua-cmsgpack
 ExternalProject_Add(luacmsgpack
-  GIT_REPOSITORY "https://github.com/orofarne/lua-cmsgpack.git"
+# GIT_REPOSITORY "https://github.com/orofarne/lua-cmsgpack.git"
+  URL "https://github.com/orofarne/lua-cmsgpack/archive/master.zip"
+  URL_MD5 "be258bdb1252dce46deeb9e0c45bcead"
   DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}
   SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/lua-cmsgpack
   BUILD_IN_SOURCE 1
@@ -30,7 +32,9 @@ set(LUACMSGPACK_SRC "${CMAKE_CURRENT_BINARY_DIR}/lua-cmsgpack/lua_cmsgpack.c" PA
 
 # msgpack-c-len
 ExternalProject_Add(msgpackclen
-  GIT_REPOSITORY "https://github.com/orofarne/msgpack-c-len.git"
+#  GIT_REPOSITORY "https://github.com/orofarne/msgpack-c-len.git"
+  URL "https://github.com/orofarne/msgpack-c-len/archive/master.zip"
+  URL_MD5 "48975a91ab892f3edfdd007083aa5fe2"
   DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}
   SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/msgpack-c-len
   BUILD_IN_SOURCE 1
