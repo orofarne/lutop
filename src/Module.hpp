@@ -16,11 +16,11 @@ class Module {
         explicit Module(std::string const &name);
         ~Module() throw();
 
-        inline std::string const & name() { return name_; }
-        inline Status status() { return status_; }
-        inline time_t lastRun() { return last_run_; }
-        inline time_t period() { return period_; }
-        inline time_t nextRun() {return lastRun() + period(); }
+        inline std::string const & name() const { return name_; }
+        inline Status status() const { return status_; }
+        inline time_t lastRun() const { return last_run_; }
+        inline time_t period() const { return period_; }
+        inline time_t nextRun() const {return lastRun() + period(); }
 
         void start();
         void stop();

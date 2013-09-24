@@ -1,11 +1,25 @@
 #include <gtest/gtest.h>
 
-#include <boost/asio/local/connect_pair.hpp>
+#include "SubProcess.hpp"
 
-#include <boost/asio/io_service.hpp>
-#include <boost/asio/local/datagram_protocol.hpp>
-#include <boost/asio/local/stream_protocol.hpp>
+#include <sys/types.h>
+#include <sys/wait.h>
 
-TEST(SubProcess, Test1) {
+using namespace lutop;
 
+
+TEST(SubProcess, FreeRun) {
+    SubProcess sp{};
 }
+
+TEST(SubProcess, Fork) {
+    SubProcess sp{};
+
+    sp.fork();
+
+    int status;
+    pid_t pid = wait(&status);
+
+    EXPECT_GT(pid, 0);
+}
+

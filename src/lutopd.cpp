@@ -13,10 +13,11 @@ smain(int argc, char *argv[]) {
     namespace po = boost::program_options;
     namespace fs = boost::filesystem;
 
-    po::options_description desc("Allowed options");
+    po::options_description desc{"Allowed options"};
     desc.add_options()
         ("help,h", "help message")
         ("config-path,c", po::value< std::vector<std::string> >(), "configuration path")
+        ("pool-size,p", po::value< unsigned int >(), "size of worker pool")
     ;
 
     po::variables_map vm;
@@ -27,6 +28,8 @@ smain(int argc, char *argv[]) {
         std::cerr << desc << "\n";
         return 1;
     }
+
+    unsigned int pool_size = vm["pool-size"].as< unsigned int >();
 
     std::vector<std::string> files;
 
@@ -55,7 +58,7 @@ smain(int argc, char *argv[]) {
     }
 
     // run it...
-    lutop::Manager m;
+    lutop::Manager m{pool_size};
 
     m.loadFiles(files);
 

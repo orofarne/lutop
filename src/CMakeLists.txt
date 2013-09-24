@@ -1,6 +1,8 @@
 add_library(lutop_lib STATIC
+    Value.cpp
     Manager.cpp
     Context.cpp
+    ProcessPool.cpp
     SubProcess.cpp
     Module.cpp
     luatools.cpp
