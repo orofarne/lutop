@@ -25,6 +25,7 @@ target_link_libraries(lutopd
     ${LUAJIT_LIBRARY}
     ${MsgPack_LIBRARY}
     ${MSGPACKCLEN_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
     "dl"
 )
 

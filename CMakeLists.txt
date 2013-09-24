@@ -37,6 +37,9 @@ set(Boost_USE_STATIC_RUNTIME    OFF)
 find_package( Boost 1.48.0 COMPONENTS system filesystem program_options REQUIRED )
 include_directories(${Boost_INCLUDE_DIRS})
 
+# Threads
+find_package(Threads REQUIRED)
+
 # Lua staff
 add_subdirectory(contrib)
 include_directories(${LUAJIT_INCLUDE_DIRS})
@@ -51,7 +54,6 @@ add_subdirectory(src)
 
 # GTest magic
 if(TESTS)
-  find_package(Threads REQUIRED)
   find_package(GTest)
 
   message(STATUS "GTest include dir: ${GTEST_INCLUDE_DIR}")
