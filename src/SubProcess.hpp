@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <array>
 
+#include <boost/asio/io_service.hpp>
+
 namespace lutop {
 
 class SubProcess {
@@ -14,7 +16,7 @@ class SubProcess {
         };
 
     public:
-        SubProcess();
+        SubProcess(boost::asio::io_service &io_service);
         ~SubProcess() throw();
 
         void fork();
@@ -26,6 +28,11 @@ class SubProcess {
         std::array<int, 2> pipefd_down_;
         std::array<int, 2> pipefd_up_;
         int pid_;
+
+        boost::asio::io_service &io_service_;
+
+    private:
+        void child();
 };
 
 }
