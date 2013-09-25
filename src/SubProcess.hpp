@@ -2,8 +2,9 @@
 
 #include <stdexcept>
 #include <array>
+#include <functional>
 
-#include <boost/asio/io_service.hpp>
+#include <boost/asio.hpp>
 
 namespace lutop {
 
@@ -15,8 +16,10 @@ class SubProcess {
                 explicit subprocess_error(const char *comment);
         };
 
+        typedef std::function<void *(void *, size_t, size_t *)> WorkerFunc;
+
     public:
-        SubProcess(boost::asio::io_service &io_service);
+        SubProcess(boost::asio::io_service &io_service, WorkerFunc f);
         ~SubProcess() throw();
 
         void fork();
@@ -29,10 +32,15 @@ class SubProcess {
         std::array<int, 2> pipefd_up_;
         int pid_;
 
+        WorkerFunc worker_f_;
+
+        // Boost::asio staff
         boost::asio::io_service &io_service_;
+        boost::asio::posix::stream_descriptor up_d_;
+        boost::asio::posix::stream_descriptor down_d_;
 
     private:
-        void child();
+        void waitData();
 };
 
 }

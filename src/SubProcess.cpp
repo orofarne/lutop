@@ -1,5 +1,7 @@
 #include "SubProcess.hpp"
 
+#include "msglen.h"
+
 #include <string>
 
 #include <errno.h>
@@ -10,6 +12,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+
+#define BLOCK_SIZE 1024
 
 namespace lutop {
 
@@ -22,9 +26,12 @@ SubProcess::subprocess_error::subprocess_error(const char *comment)
 {
 }
 
-SubProcess::SubProcess(boost::asio::io_service &io_service)
+SubProcess::SubProcess(boost::asio::io_service &io_service, WorkerFunc f)
     : pid_(0)
+    , worker_f_(f)
     , io_service_(io_service)
+    , up_d_(io_service_)
+    , down_d_(io_service_)
 {
     if(pipe(pipefd_down_.data()) < 0)
         throw subprocess_error("pipe");
@@ -69,7 +76,10 @@ SubProcess::fork() {
         close(pipefd_down_[1]);
         close(pipefd_up_[0]);
 
-        child();
+        up_d_.assign(pipefd_up_[1]);
+        down_d_.assign(pipefd_down_[0]);
+
+        waitData();
     } else {
         // Parent process
         io_service_.notify_fork(boost::asio::io_service::fork_parent);
@@ -82,8 +92,59 @@ SubProcess::fork() {
 }
 
 void
-SubProcess::child() {
-    io_service_.run();
+SubProcess::waitData() {
+    size_t len = BLOCK_SIZE;
+    size_t offset = 0;
+    std::shared_ptr<char> p{
+        reinterpret_cast<char *>(::malloc(len)),
+        [](char *ptr) { if(ptr) ::free(ptr); }
+    };
+    if(p.get() == nullptr)
+        throw std::runtime_error("no memory");
+
+    for(;;) {
+        size_t n = down_d_.read_some(boost::asio::buffer(p.get() + offset, len - offset));
+
+        char *error = nullptr;
+        size_t msg_len = ::msgpackclen_buf_read(p.get(), n, &error);
+        if(error) {
+            std::ostringstream msg;
+            msg << "Error [msgpackclen_buf_read]: " << error;
+            ::free(error);
+            throw std::runtime_error{msg.str()};
+        }
+
+        offset += n;
+
+        if(msg_len == 0) {
+            if(n == len - offset) {
+                len += BLOCK_SIZE;
+                char *ptr = reinterpret_cast<char *>(::realloc(p.get(), len));
+                p.reset(ptr);
+                if(p.get() == nullptr)
+                    throw std::runtime_error("no memory");
+            }
+        }
+        else {
+            size_t out_size = 0;
+            void *out_ptr = worker_f_(
+                    reinterpret_cast<void *>(p.get()), msg_len, &out_size
+                    );
+            std::shared_ptr<void> out_p{
+                out_ptr,
+                [](void *ptr) { if(ptr) ::free(ptr); }
+            };
+
+            // send answer
+            size_t m = 0;
+            while(m < out_size)
+                m += up_d_.write_some(boost::asio::buffer(out_ptr, out_size));
+
+            // move
+            ::memmove(p.get(), p.get() + msg_len, offset - msg_len);
+            offset = 0;
+        }
+    }
 }
 
 }
