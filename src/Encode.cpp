@@ -47,14 +47,20 @@ std::string encodeRequest(const Request &r) {
             {
                 // Hack
                 std::string b = r.value.as<std::string>();
-                msgpack_sbuffer_write(reinterpret_cast<void *>(buffer.get()), b.data(), b.size());
+                if(b.empty())
+                    msgpack_pack_nil(pk.get());
+                else
+                    msgpack_sbuffer_write(reinterpret_cast<void *>(buffer.get()), b.data(), b.size());
             }
             break;
     }
 
     msgpack_pack_raw(pk.get(), 5);
     msgpack_pack_raw_body(pk.get(), "state", 5);
-    msgpack_sbuffer_write(reinterpret_cast<void *>(buffer.get()), r.state.data(), r.state.size());
+    if(r.state.empty())
+        msgpack_pack_nil(pk.get());
+    else
+        msgpack_sbuffer_write(reinterpret_cast<void *>(buffer.get()), r.state.data(), r.state.size());
 
     return std::string(buffer->data, buffer->size);
 }
