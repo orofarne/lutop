@@ -13,6 +13,8 @@ Value::invalid_cast::invalid_cast()
 
 Value::Value(Type v_type)
     : type_(v_type)
+    , boolean_v_(false)
+    , numeric_v_(0)
 {
 }
 

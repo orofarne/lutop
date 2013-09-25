@@ -14,7 +14,7 @@ namespace lutop {
 
 class Manager {
     public:
-        Manager(unsigned int pool_size);
+        Manager(unsigned int pool_size, unsigned int max_count);
         ~Manager() throw();
 
         void loadFiles(std::vector<std::string> const &files);
@@ -35,7 +35,7 @@ class Manager {
         void prepareModules();
         time_t startSomething();
         void startModule(const Module &m);
-        void moduleCallback(const Module &m, const Response &r, const boost::system::error_code &err);
+        void moduleCallback(const Module &m, std::shared_ptr<Response> r, const boost::system::error_code &err);
 };
 
 }

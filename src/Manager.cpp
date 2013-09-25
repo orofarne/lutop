@@ -24,8 +24,8 @@
 
 namespace lutop {
 
-Manager::Manager(unsigned int pool_size)
-    : pp_(io_service_, c_, pool_size)
+Manager::Manager(unsigned int pool_size, unsigned int max_count)
+    : pp_(io_service_, c_, pool_size, max_count)
     , scheduler_timer_(io_service_)
 {
 
@@ -162,18 +162,18 @@ void
 Manager::startModule(const Module &m) {
     namespace ph=std::placeholders;
 
-    Request r;
-    r.func = "timer";
-    r.state = ""; // FIXME ...
-    r.metric = m.name();
-    // r.value = <nil>;
-    r.timestamp = ::time(nullptr);
+    std::shared_ptr<Request> r{new Request};
+    r->func = "timer";
+    r->state = ""; // FIXME ...
+    r->metric = m.name();
+    // r->value = <nil>;
+    r->timestamp = ::time(nullptr);
 
     pp_.process(r, std::bind(&Manager::moduleCallback, this, m, ph::_1, ph::_2));
 }
 
 void
-Manager::moduleCallback(const Module &m, const Response &r, const boost::system::error_code &err) {
+Manager::moduleCallback(const Module &m, std::shared_ptr<Response> r, const boost::system::error_code &err) {
     if(err) {
         throw std::runtime_error(err.message());
     }

@@ -18,6 +18,7 @@ smain(int argc, char *argv[]) {
         ("help,h", "help message")
         ("config-path,c", po::value< std::vector<std::string> >(), "configuration path")
         ("pool-size,p", po::value< unsigned int >(), "size of worker pool")
+        ("worker-lifetime,l", po::value< unsigned int >(), "max worker cycles")
     ;
 
     po::variables_map vm;
@@ -30,6 +31,7 @@ smain(int argc, char *argv[]) {
     }
 
     unsigned int pool_size = vm["pool-size"].as< unsigned int >();
+    unsigned int worker_lifetime = vm["worker-liftime"].as< unsigned int >();
 
     std::vector<std::string> files;
 
@@ -58,7 +60,7 @@ smain(int argc, char *argv[]) {
     }
 
     // run it...
-    lutop::Manager m{pool_size};
+    lutop::Manager m{pool_size, worker_lifetime};
 
     m.loadFiles(files);
 

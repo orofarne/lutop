@@ -4,6 +4,7 @@ add_library(lutop_lib STATIC
     Context.cpp
     ProcessPool.cpp
     SubProcess.cpp
+    Worker.cpp
     Module.cpp
     luatools.cpp
 )
