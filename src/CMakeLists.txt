@@ -7,6 +7,7 @@ add_library(lutop_lib STATIC
     Worker.cpp
     Module.cpp
     luatools.cpp
+    Encode.cpp
 )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lua_cmsgpack.c ${CMAKE_CURRENT_BINARY_DIR}/lua_cmsgpack.c)

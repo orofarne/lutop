@@ -6,9 +6,10 @@
 
 namespace lutop {
 
-class Response {
+struct Response {
     std::string state; // binary
     Value value; // binary
+    time_t timestamp;
     std::string error; // text
 };
 

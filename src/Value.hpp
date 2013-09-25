@@ -33,10 +33,10 @@ class Value {
 
         ~Value() throw();
 
-        inline Type type() { return type_; }
+        inline Type type() const { return type_; }
 
         template<typename T>
-        T as();
+        T as() const;
 
         const std::string &rawBuffer();
 
@@ -105,7 +105,7 @@ Value::Value(Type v_type, T v)
 
 template<typename T>
 T
-Value::as() {
+Value::as() const {
     switch(type_) {
         case Type::Nil:
             throw invalid_cast{};
