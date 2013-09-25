@@ -9,6 +9,7 @@ struct Request {
     std::string state; // binary
     std::string metric; // text
     Value value;
+    time_t timestamp;
 };
 
 }

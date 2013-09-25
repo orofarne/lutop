@@ -136,7 +136,7 @@ Manager::prepareModules() {
 
 time_t
 Manager::startSomething() {
-    time_t now = time(nullptr);
+    time_t now = ::time(nullptr);
     time_t wait;
     wait = std::numeric_limits<decltype(wait)>::max();
 
@@ -167,6 +167,7 @@ Manager::startModule(const Module &m) {
     r.state = ""; // FIXME ...
     r.metric = m.name();
     // r.value = <nil>;
+    r.timestamp = ::time(nullptr);
 
     pp_.process(r, std::bind(&Manager::moduleCallback, this, m, ph::_1, ph::_2));
 }
