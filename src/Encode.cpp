@@ -2,6 +2,15 @@
 
 #include <msgpack.h>
 
+#include <stdexcept>
+
+#define ASSERTPP(expr) \
+    if (!(expr)) { \
+        std::string msg = "Assertion failed: "; \
+        msg += #expr; \
+        throw std::runtime_error(msg); \
+    }
+
 namespace lutop {
 
 std::string encodeRequest(const Request &r) {
@@ -66,7 +75,13 @@ std::string encodeRequest(const Request &r) {
 }
 
 std::shared_ptr<Response> decodeResponse(std::string const &buf) {
-    return nullptr;
+    msgpack_unpacked msg;
+    msgpack_unpacked_init(&msg);
+    ASSERTPP( msgpack_unpack_next(&msg, buf.data(), buf.size(), nullptr) );
+
+    std::shared_ptr<Response> r{new Response};
+
+    return r;
 }
 
 }
