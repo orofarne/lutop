@@ -1,5 +1,13 @@
-BUILD
 =====
+LUTOP
+=====
+
+.. contents::
+
+INSTALL
+-------
+
+::
 
     mkdir build
     cd build

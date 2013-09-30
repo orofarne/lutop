@@ -14,8 +14,9 @@ Worker::~Worker() throw() {
 
 void *
 Worker::operator()(void *in_buf, size_t in_size, size_t *out_buf) {
-    (void)c_;
-    // TODO
+    c_.setString("__request", reinterpret_cast<char *>(in_buf), in_size);
+
+
     return nullptr;
 }
 
